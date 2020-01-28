@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ClientNetworkTest/bin/Debug/ClientNetworkTest.vshost.exe.manifest
+/ClientNetworkTest/bin/Debug/ClientNetworkTest.vshost.exe.config
+/ClientNetworkTest/bin/Debug/ClientNetworkTest.vshost.exe
+/ClientNetworkTest/bin/Debug/ClientNetworkTest.pdb
+/ClientNetworkTest/bin/Debug/ClientNetworkTest.exe.config
+/ClientNetworkTest/bin/Debug/ClientNetworkTest.exe
+/ClientNetworkTest/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+/ClientNetworkTest/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+/ClientNetworkTest/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+/ClientNetworkTest/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/ClientNetworkTest/obj/Debug/ClientNetworkTest.pdb
+/ClientNetworkTest/obj/Debug/ClientNetworkTest.exe
+/ClientNetworkTest/obj/Debug/ClientNetworkTest.csprojResolveAssemblyReference.cache
+/ClientNetworkTest/obj/Debug/ClientNetworkTest.csproj.FileListAbsolute.txt
+/Debug
