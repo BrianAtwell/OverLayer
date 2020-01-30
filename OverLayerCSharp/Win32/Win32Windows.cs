@@ -31,6 +31,9 @@ namespace OverLayerCSharp.Win32
            uint wMsgFilterMax);
 
         [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
         public static extern sbyte PeekMessage(out uint lpMsg, IntPtr hWnd, uint wMsgFilterMin,
            uint wMsgFilterMax, uint wRemoveMsg);
 
@@ -47,6 +50,8 @@ namespace OverLayerCSharp.Win32
         [DllImport("user32.dll")]
         public static extern int TranslateAccelerator(IntPtr hwnd, IntPtr hAccelTable, [In] ref uint msg);
 
+        [DllImport("user32.dll")]
+        public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, uint flags);
 
         [DllImport("user32.dll", SetLastError = true, EntryPoint = "CreateWindowEx")]
         public static extern IntPtr CreateWindowEx(
@@ -172,7 +177,21 @@ namespace OverLayerCSharp.Win32
         [DllImport("user32.dll")]
         public static extern IntPtr GetSysColorBrush(int nIndex);
 
-        public const uint QS_MOUSE = (QS_MOUSEMOVE | QS_MOUSEBUTTON);
+        /*
+         * RedrawWindow() flags
+         */
+        public const uint RDW_INVALIDATE = 0x0001;
+        public const uint RDW_INTERNALPAINT = 0x0002;
+        public const uint RDW_ERASE = 0x0004;
+        public const uint RDW_VALIDATE = 0x0008;
+        public const uint RDW_NOINTERNALPAINT = 0x0010;
+        public const uint RDW_NOERASE = 0x0020;
+        public const uint RDW_NOCHILDREN = 0x0040;
+        public const uint RDW_ALLCHILDREN = 0x0080;
+        public const uint RDW_UPDATENOW = 0x0100;
+        public const uint RDW_ERASENOW = 0x0200;
+        public const uint RDW_FRAME = 0x0400;
+        public const uint RDW_NOFRAME = 0x0800;
 
         public const int COLOR_SCROLLBAR = 0;
         public const int COLOR_BACKGROUND = 1;

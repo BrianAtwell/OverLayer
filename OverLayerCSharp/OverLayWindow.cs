@@ -20,13 +20,15 @@ namespace OverLayerCSharp
         private const string win32ClassName = "OverLayerWindow\0";
         private const string wndTitle = "OverLayer\0";
         private UInt32 IDI_OVERLAYER=107;
-        private IntPtr wndHwnd;
+        public static IntPtr wndHwnd;
         private IntPtr hInstance;
         private ServerThread serverThread;
 
         //Has to be static to avoid NullReference Exception
         public static volatile TextBoxPreprocess _serverTextBox =null;
-        public static volatile TextBoxPreprocess _textBox;
+        public static volatile TextBoxData _textBox;
+
+        public static bool IsRunning;
 
         public void CallbackServerTextBoxUpdate(TextBoxPreprocess rtextBox)
         {
@@ -40,12 +42,19 @@ namespace OverLayerCSharp
 
         public OverLayWindow()
         {
-            _textBox = null;
+            IsRunning = true;
+            _textBox = new TextBoxData();
             _serverTextBox = null;
             serverThread = new ServerThread();
             serverThread.UpdateTextBox += CallbackServerTextBoxUpdate;
             //serverThread.BindAddressPort += BindIPAddressPort;
             serverThread.Start();
+
+            _textBox.Text = "test";
+            _textBox.X = 0;
+            _textBox.Y = 0;
+            _textBox.Width = 200;
+            _textBox.Height = 200;
         }
 
         public bool CreateWindow()
@@ -110,13 +119,13 @@ namespace OverLayerCSharp
             uint msg = 0;
             sbyte gmRet = 0;
 
-            while (gmRet != -1)
+            while (IsRunning && gmRet != -1)
             {
-                //gmRet = Win32Windows.GetMessage(out msg, IntPtr.Zero, 0, 0);
-                gmRet = Win32Windows.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
+                //gmRet = Win32Windows.GetMessage(out msg, wndHwnd, 0, 0);
+                gmRet = Win32Windows.PeekMessage(out msg, wndHwnd, 0, 0, 0);
                 if(gmRet != 0)
                 {
-                    gmRet = Win32Windows.GetMessage(out msg, IntPtr.Zero, 0, 0);
+                    gmRet = Win32Windows.GetMessage(out msg, wndHwnd, 0, 0);
 
                     if (gmRet == -1)
                     {
@@ -131,14 +140,18 @@ namespace OverLayerCSharp
 
                 if (_serverTextBox != null)
                 {
-                    _textBox = _serverTextBox;
+                    _textBox = _serverTextBox.ToTextBoxData(wndHwnd);
                     _serverTextBox = null;
 
                     if (_textBox != null)
                     {
-                        Debug.WriteLine("Received text data {0}", _textBox.text);
-                        MessageBox.Show(string.Format("Received text data {0}", _textBox.text));
+                        Debug.WriteLine("Received text data {0}", _textBox.Text);
+                        //MessageBox.Show(string.Format("Received text data {0}", _textBox.Text));
+                        Win32Windows.SendMessage(wndHwnd, Win32Messages.WM_PAINT, IntPtr.Zero, IntPtr.Zero);
                     }
+                    //Win32Windows.UpdateWindow(wndHwnd);
+                    //Win32Windows.RedrawWindow(wndHwnd, IntPtr.Zero, IntPtr.Zero, Win32Windows.RDW_INTERNALPAINT);
+                    //Win32Windows.SendMessage(wndHwnd, Win32Messages.WM_PAINT, IntPtr.Zero, IntPtr.Zero);
                 }
             }
             return gmRet;
@@ -161,18 +174,18 @@ namespace OverLayerCSharp
                 // All GUI painting must be done here
                 case Win32Messages.WM_PAINT:
                     {
-                        string text = "Test";
+                        Debug.WriteLine("Window Paint");
                         Win32Windows.RECT rect;
-                        rect.left = 0;
-                        rect.right = 200;
-                        rect.bottom = 200;
-                        rect.top = 0;
+                        rect.left = (int)_textBox.X;
+                        rect.right = (int)_textBox.Width;
+                        rect.bottom = (int)_textBox.Height;
+                        rect.top = (int)_textBox.Y;
 
                         Win32Windows.PAINTSTRUCT ps;
                         IntPtr hdc = Win32Windows.BeginPaint(hWnd, out ps);
                         // TODO: Add any drawing code that uses hdc here...4
                         Win32Painting.SetBkMode(hdc, Win32Painting.BackgroundMode.TRANSPARENT);
-                        Win32Windows.DrawText(hdc, text, text.Length, out rect, 0);
+                        Win32Windows.DrawText(hdc, _textBox.Text, _textBox.Text.Length, out rect, 0);
                         Win32Windows.EndPaint(hWnd, out ps);
                     }
                     break;
@@ -184,6 +197,8 @@ namespace OverLayerCSharp
 
                 case Win32Messages.WM_DESTROY:
                     //Win32Windows.DestroyWindow(hWnd);
+                    Debug.WriteLine("Msg: WM_DESTROY");
+                    IsRunning = false;
 
                     //If you want to shutdown the application, call the next function instead of DestroyWindow
                     Win32Windows.PostQuitMessage(0);

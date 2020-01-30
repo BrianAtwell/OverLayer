@@ -45,5 +45,18 @@ namespace OverLayerCSharp.Structures
 
             return sb.ToString();
         }
+
+        public TextBoxData ToTextBoxData(IntPtr hWnd)
+        {
+            TextBoxData textBox = new TextBoxData();
+
+            textBox.Text = text;
+            textBox.X = int.Parse(x);
+            textBox.Y = int.Parse(y);
+            textBox.Width = int.Parse(width);
+            textBox.Height = int.Parse(height);
+
+            return textBox;
+        }
     }
 }
