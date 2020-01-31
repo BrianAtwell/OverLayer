@@ -24,6 +24,8 @@ namespace OverLayerCSharp
         private IntPtr hInstance;
         private ServerThread serverThread;
 
+        static readonly object _serverLock = new object();
+
         //Has to be static to avoid NullReference Exception
         public static volatile TextBoxPreprocess _serverTextBox =null;
         public static volatile TextBoxData _textBox;
@@ -32,12 +34,18 @@ namespace OverLayerCSharp
 
         public void CallbackServerTextBoxUpdate(TextBoxPreprocess rtextBox)
         {
-            _serverTextBox = rtextBox;
+            lock(_serverLock)
+            {
+                _serverTextBox = rtextBox;
+            }
         }
 
         public void BindIPAddressPort(IPAddress ip, int port)
         {
-            Console.WriteLine("IP Address: {0} port {1}", ip, port);
+            lock (_serverLock)
+            {
+                Console.WriteLine("IP Address: {0} port {1}", ip, port);
+            }
         }
 
         public OverLayWindow()
@@ -138,20 +146,27 @@ namespace OverLayerCSharp
                     }
                 }
 
-                if (_serverTextBox != null)
+                lock(_serverLock)
                 {
-                    _textBox = _serverTextBox.ToTextBoxData(wndHwnd);
-                    _serverTextBox = null;
-
-                    if (_textBox != null)
+                    if (_serverTextBox != null)
                     {
-                        Debug.WriteLine("Received text data {0}", _textBox.Text);
-                        //MessageBox.Show(string.Format("Received text data {0}", _textBox.Text));
-                        Win32Windows.SendMessage(wndHwnd, Win32Messages.WM_PAINT, IntPtr.Zero, IntPtr.Zero);
+                        _textBox = _serverTextBox.ToTextBoxData(wndHwnd);
+                        _serverTextBox = null;
+
+                        if (_textBox != null)
+                        {
+                            Debug.WriteLine("Received text data {0}", _textBox.Text);
+                            //MessageBox.Show(string.Format("Received text data {0}", _textBox.Text));
+
+                            //Win32Windows.RedrawWindow(wndHwnd, ref rect, IntPtr.Zero, Win32Windows.RDW_INTERNALPAINT);
+                            Win32Windows.InvalidateRect(wndHwnd, IntPtr.Zero, true);
+
+                            //Win32Windows.SendMessage(wndHwnd, Win32Messages.WM_PAINT, IntPtr.Zero, IntPtr.Zero);
+                        }
+                        //Win32Windows.UpdateWindow(wndHwnd);
+                        //Win32Windows.RedrawWindow(wndHwnd, IntPtr.Zero, IntPtr.Zero, Win32Windows.RDW_INTERNALPAINT);
+                        //Win32Windows.SendMessage(wndHwnd, Win32Messages.WM_PAINT, IntPtr.Zero, IntPtr.Zero);
                     }
-                    //Win32Windows.UpdateWindow(wndHwnd);
-                    //Win32Windows.RedrawWindow(wndHwnd, IntPtr.Zero, IntPtr.Zero, Win32Windows.RDW_INTERNALPAINT);
-                    //Win32Windows.SendMessage(wndHwnd, Win32Messages.WM_PAINT, IntPtr.Zero, IntPtr.Zero);
                 }
             }
             return gmRet;
@@ -174,19 +189,21 @@ namespace OverLayerCSharp
                 // All GUI painting must be done here
                 case Win32Messages.WM_PAINT:
                     {
-                        Debug.WriteLine("Window Paint");
-                        Win32Windows.RECT rect;
-                        rect.left = (int)_textBox.X;
-                        rect.right = (int)_textBox.Width;
-                        rect.bottom = (int)_textBox.Height;
-                        rect.top = (int)_textBox.Y;
+                        lock(_serverLock)
+                        {
+                            Debug.WriteLine("Window Paint");
+                            Win32Windows.RECT rect;
+                            rect.left = (int)_textBox.X;
+                            rect.right = (int)_textBox.Width;
+                            rect.bottom = (int)_textBox.Height;
+                            rect.top = (int)_textBox.Y;
 
-                        Win32Windows.PAINTSTRUCT ps;
-                        IntPtr hdc = Win32Windows.BeginPaint(hWnd, out ps);
-                        // TODO: Add any drawing code that uses hdc here...4
-                        Win32Painting.SetBkMode(hdc, Win32Painting.BackgroundMode.TRANSPARENT);
-                        Win32Windows.DrawText(hdc, _textBox.Text, _textBox.Text.Length, out rect, 0);
-                        Win32Windows.EndPaint(hWnd, out ps);
+                            Win32Windows.PAINTSTRUCT ps;
+                            IntPtr hdc = Win32Windows.BeginPaint(hWnd, out ps);
+                            Win32Painting.SetBkMode(hdc, Win32Painting.BackgroundMode.TRANSPARENT);
+                            Win32Windows.DrawText(hdc, _textBox.Text, _textBox.Text.Length, out rect, 0);
+                            Win32Windows.EndPaint(hWnd, out ps);
+                        }
                     }
                     break;
 

@@ -53,6 +53,15 @@ namespace OverLayerCSharp.Win32
         [DllImport("user32.dll")]
         public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, uint flags);
 
+        [DllImport("user32.dll")]
+        public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
+
+        [DllImport("user32.dll")]
+        public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+
+        [DllImport("user32.dll")]
+        public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
         [DllImport("user32.dll", SetLastError = true, EntryPoint = "CreateWindowEx")]
         public static extern IntPtr CreateWindowEx(
            UInt32 dwExStyle,
