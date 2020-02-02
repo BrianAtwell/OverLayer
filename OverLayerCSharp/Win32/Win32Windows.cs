@@ -37,6 +37,8 @@ namespace OverLayerCSharp.Win32
         public static extern sbyte PeekMessage(out uint lpMsg, IntPtr hWnd, uint wMsgFilterMin,
            uint wMsgFilterMax, uint wRemoveMsg);
 
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
 
         [DllImport("user32.dll")]
         public static extern bool TranslateMessage([In] ref uint lpMsg);
@@ -106,6 +108,13 @@ namespace OverLayerCSharp.Win32
             public int top;
             public int right;
             public int bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SIZE
+        {
+            public long cx;
+            public long cy;
         }
 
         [DllImport("user32.dll")]
@@ -268,5 +277,9 @@ namespace OverLayerCSharp.Win32
         public const int GWLP_WNDPROC = -4;
 
         public const uint LWA_COLORKEY = 0x00000001;
+
+
+        public const int SM_CXSCREEN = 0;
+        public const int SM_CYSCREEN = 1;
     }
 }

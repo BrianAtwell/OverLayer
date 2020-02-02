@@ -9,6 +9,26 @@ namespace OverLayerCSharp.Win32
 {
     public static class Win32Painting
     {
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct LOGFONT
+        {
+            public int lfHeight;
+            public int lfWidth;
+            public int lfEscapement;
+            public int lfOrientation;
+            public int lfWeight;
+            public byte lfItalic;
+            public byte lfUnderline;
+            public byte lfStrikeOut;
+            public byte lfCharSet;
+            public byte lfOutPrecision;
+            public byte lfClipPrecision;
+            public byte lfQuality;
+            public byte lfPitchAndFamily;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string lfFaceName;
+        }
+
         public static UInt32 RGB(byte red, byte green, byte blue)
         {
             UInt32 result = 0;
@@ -23,6 +43,15 @@ namespace OverLayerCSharp.Win32
 
         [DllImport("gdi32.dll")]
         public static extern int SetBkMode(IntPtr hdc, int mode);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateFontIndirectW(ref LOGFONT lplf);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr SelectObject(IntPtr hdc, IntPtr obj);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr SetTextColor(IntPtr hdc, IntPtr color);
 
         public static class BackgroundMode
         {

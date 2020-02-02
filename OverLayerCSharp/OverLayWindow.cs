@@ -29,6 +29,8 @@ namespace OverLayerCSharp
         //Has to be static to avoid NullReference Exception
         public static volatile TextBoxPreprocess _serverTextBox =null;
         public static volatile TextBoxData _textBox;
+        public static Win32Painting.LOGFONT _fontParams;
+        public static volatile IntPtr _font;
 
         public static bool IsRunning;
 
@@ -65,9 +67,19 @@ namespace OverLayerCSharp
             _textBox.Height = 200;
         }
 
+        public static Win32Windows.SIZE GetWindowSize()
+        {
+            Win32Windows.SIZE size;
+            size.cx = Win32Windows.GetSystemMetrics(Win32Windows.SM_CXSCREEN);
+            size.cy = Win32Windows.GetSystemMetrics(Win32Windows.SM_CYSCREEN);
+
+            return size;
+        }
+
         public bool CreateWindow()
         {
-            wndHwnd = Win32Windows.CreateWindowEx(0, win32ClassName, wndTitle, (UInt32)Win32WindowStyles.WS_POPUP, 0, 0, 300, 300, IntPtr.Zero, IntPtr.Zero, hInstance, IntPtr.Zero);
+            Win32Windows.SIZE size = GetWindowSize();
+            wndHwnd = Win32Windows.CreateWindowEx(0, win32ClassName, wndTitle, (UInt32)Win32WindowStyles.WS_POPUP, 0, 0, (int)size.cx, (int)size.cy, IntPtr.Zero, IntPtr.Zero, hInstance, IntPtr.Zero);
 
             if (wndHwnd == ((IntPtr)0))
             {
@@ -191,6 +203,7 @@ namespace OverLayerCSharp
                     {
                         lock(_serverLock)
                         {
+                            IntPtr oldFont = IntPtr.Zero;
                             Debug.WriteLine("Window Paint");
                             Win32Windows.RECT rect;
                             rect.left = (int)_textBox.X;
@@ -200,8 +213,18 @@ namespace OverLayerCSharp
 
                             Win32Windows.PAINTSTRUCT ps;
                             IntPtr hdc = Win32Windows.BeginPaint(hWnd, out ps);
+
                             Win32Painting.SetBkMode(hdc, Win32Painting.BackgroundMode.TRANSPARENT);
+                            if (_font != IntPtr.Zero)
+                            {
+                                oldFont = Win32Painting.SelectObject(hdc, _font);
+                            }
                             Win32Windows.DrawText(hdc, _textBox.Text, _textBox.Text.Length, out rect, 0);
+
+                            if (_font != IntPtr.Zero)
+                            {
+                                Win32Painting.SelectObject(hdc, oldFont);
+                            }
                             Win32Windows.EndPaint(hWnd, out ps);
                         }
                     }
