@@ -1,4 +1,14 @@
-﻿using System;
+﻿/**
+ * <summary>
+ * This is a Win32 unmanaged code compatible class.
+ * This code mostly links to functions from the user32.dll.
+ * Most of the these functions are used when interacting with Win32 Windows.
+ * License MIT 2020
+ * </summary>
+ * <author>Brian Atwell</author>
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;

@@ -1,4 +1,13 @@
-﻿using System;
+﻿/**
+ * <summary>
+ * This is a TextBoxPreprocess class handles initial conversion from XML string.
+ * Values must be keep as a string for additional processing.
+ * License MIT 2020
+ * </summary>
+ * <author>Brian Atwell</author>
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +27,7 @@ namespace OverLayerCSharp.Structures
         public string height;
         public string color;
         public string fontName;
+        public Nullable<int> fontSize;
         public string status;
 
         public static TextBoxPreprocess Deserialize(string xmlString)

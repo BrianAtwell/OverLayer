@@ -1,4 +1,13 @@
-﻿using OverLayerCSharp.Structures;
+﻿/**
+ * <summary>
+ * This has the server thread code that handles the clients.
+ * Clients sends new text parameters to OverLayWindow.
+ * License MIT 2020
+ * </summary>
+ * <author>Brian Atwell</author>
+ */
+
+using OverLayerCSharp.Structures;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

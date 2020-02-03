@@ -1,4 +1,12 @@
-﻿using OverLayerCSharp.Structures;
+﻿/**
+ * <summary>
+ * This program is an client network to send the OverLayer an updated text parameters.
+ * This sends the TextBoxPreprocess Serialized as an XML string.
+ * The server then returns a status XML.
+ * </summary>
+ */
+
+using OverLayerCSharp.Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +63,8 @@ namespace ClientNetworkTest
                     textBox.x = "0";
                     textBox.y = "0";
                     textBox.text = "Hello World!";
+                    textBox.fontSize = 18;
+                    textBox.fontName = "MS Sans Serif";
                     string xmlString;
 
                     xmlString = textBox.Serialize();

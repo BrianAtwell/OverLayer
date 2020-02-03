@@ -1,4 +1,12 @@
-﻿using System;
+﻿/**
+ * <summary>
+ * This is a Win32 windows messages
+ * License MIT 2020
+ * </summary>
+ * <author>Brian Atwell</author>
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -1,4 +1,12 @@
-﻿using System;
+﻿/**
+ * <summary>
+ * Main Program that initializes, registers, creates, and messages for OverLay window.
+ * License MIT 2020
+ * </summary>
+ * <author>Brian Atwell</author>
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
