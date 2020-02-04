@@ -7,7 +7,6 @@
 
 #include "stdio.h"
 
-FF_SWISS
 
 #define MAX_LOADSTRING 100
 

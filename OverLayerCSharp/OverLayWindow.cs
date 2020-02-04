@@ -31,7 +31,7 @@ namespace OverLayerCSharp
     public class OverLayWindow
     {
         // Red brush used as our background to enable transparancy
-        private IntPtr redBrush;
+        private static IntPtr redBrush = IntPtr.Zero;
         private Win32Windows.WndProc delegWndProc = myWndProc;
         private const string win32ClassName = "OverLayerWindow\0";
         private const string wndTitle = "OverLayer\0";
@@ -47,9 +47,10 @@ namespace OverLayerCSharp
         private static IntPtr hInstance;
         private static volatile TextBoxPreprocess _serverTextBox =null;
         private static volatile TextBoxData _textBox;
-        private static volatile TextBoxPreprocess _prevTextBox;
+        private static volatile TextBoxData _prevTextBox;
         private static Win32Painting.LOGFONT _fontParams;
         private static IntPtr _font=IntPtr.Zero;
+        private static IntPtr _colorRef = IntPtr.Zero;
 
         public static bool IsRunning;
 
@@ -147,7 +148,7 @@ namespace OverLayerCSharp
             uint color = Win32Painting.RGB(255, 0, 0);
             Debug.WriteLine(string.Format("color {0}",color));
 
-            redBrush = Win32Painting.CreateSolidBrush(Win32Painting.RGB(255, 0, 0));
+            //redBrush = Win32Painting.CreateSolidBrush(Win32Painting.RGB(255, 0, 0));
 
             wcex.cbSize = Marshal.SizeOf(typeof(Win32Windows.WNDCLASSEX));
 
@@ -291,6 +292,10 @@ namespace OverLayerCSharp
                     if (_serverTextBox != null)
                     {
                         _textBox = _serverTextBox.ToTextBoxData(wndHwnd);
+                        if(!string.IsNullOrEmpty(_serverTextBox.status) && _serverTextBox.status.ToLower().Equals("stop"))
+                        {
+                            Win32Windows.DestroyWindow(wndHwnd);
+                        }
 
                         if (_textBox != null)
                         {
@@ -305,6 +310,21 @@ namespace OverLayerCSharp
                                 }
                                 _fontParams = SetFont(_serverTextBox.fontSize.Value, _serverTextBox.fontName);
                                 _font = Win32Painting.CreateFontIndirectW(ref _fontParams);
+                            }
+
+                            if (_prevTextBox!=null && _prevTextBox.Color!=null && _prevTextBox.Color != _textBox.Color)
+                            {
+                                if (_textBox.Color.HasValue)
+                                {
+                                    _colorRef = Win32Painting.CreateSolidBrush(_textBox.Color.Value);
+                                }
+                                else
+                                {
+                                    if(_colorRef != IntPtr.Zero)
+                                    {
+                                        Win32Painting.DeleteObject(_colorRef);
+                                    }
+                                }
                             }
                             
                             Win32Windows.InvalidateRect(wndHwnd, IntPtr.Zero, true);
@@ -339,6 +359,7 @@ namespace OverLayerCSharp
                     {
                         lock(_serverLock)
                         {
+                            IntPtr oldColor = IntPtr.Zero;
                             IntPtr oldFont = IntPtr.Zero;
                             Debug.WriteLine("Window Paint");
                             Win32Windows.RECT rect;
@@ -355,6 +376,12 @@ namespace OverLayerCSharp
                             {
                                 oldFont = Win32Painting.SelectObject(hdc, _font);
                             }
+
+                            if(_colorRef != IntPtr.Zero)
+                            {
+                                Win32Painting.SetTextColor(hdc, _colorRef);
+                            }
+
                             Win32Windows.DrawText(hdc, _textBox.Text, _textBox.Text.Length, out rect, 0);
 
                             if (_font != IntPtr.Zero)
@@ -380,6 +407,16 @@ namespace OverLayerCSharp
                     {
                         Win32Painting.DeleteObject(_font);
 
+                    }
+
+                    if (redBrush != IntPtr.Zero)
+                    {
+                        Win32Painting.DeleteObject(redBrush);
+                    }
+
+                    if(_colorRef != IntPtr.Zero)
+                    {
+                        Win32Painting.DeleteObject(_colorRef);
                     }
 
                     IsRunning = false;

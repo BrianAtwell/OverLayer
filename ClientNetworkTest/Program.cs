@@ -65,6 +65,7 @@ namespace ClientNetworkTest
                     textBox.text = "Hello World!";
                     textBox.fontSize = 18;
                     textBox.fontName = "MS Sans Serif";
+                    textBox.color = "0xFFFFFF";
                     string xmlString;
 
                     xmlString = textBox.Serialize();

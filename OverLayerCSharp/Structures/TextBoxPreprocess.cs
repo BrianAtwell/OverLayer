@@ -1,14 +1,17 @@
-﻿/**
- * <summary>
- * This is a TextBoxPreprocess class handles initial conversion from XML string.
- * Values must be keep as a string for additional processing.
- * License MIT 2020
- * </summary>
- * <author>Brian Atwell</author>
- */
+﻿
 
+using OverLayerCSharp.Win32;
+/**
+* <summary>
+* This is a TextBoxPreprocess class handles initial conversion from XML string.
+* Values must be keep as a string for additional processing.
+* License MIT 2020
+* </summary>
+* <author>Brian Atwell</author>
+*/
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -68,6 +71,21 @@ namespace OverLayerCSharp.Structures
             textBox.Y = int.Parse(y);
             textBox.Width = int.Parse(width);
             textBox.Height = int.Parse(height);
+
+            textBox.Color = null;
+
+            try {
+                textBox.Color = Convert.ToUInt32(color, 16);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Exception {0} Color {1}", ex, color);
+            }
+            
+            if(textBox.Color.HasValue)
+            {
+                Debug.WriteLine("Color RED {0}, GREEN{1}, BLUE{2}",textBox.Color&0xFF, (textBox.Color>>8) & 0xFF, (textBox.Color>>16) & 0xFF);
+            }
 
             return textBox;
         }
