@@ -87,7 +87,7 @@ namespace OverLayerCSharp.Win32
         public static extern bool DeleteObject(IntPtr hobj);
 
         [DllImport("gdi32.dll")]
-        public static extern IntPtr SetTextColor(IntPtr hdc, IntPtr color);
+        public static extern IntPtr SetTextColor(IntPtr hdc, UInt32 color);
 
         public static class BackgroundMode
         {

@@ -28,6 +28,7 @@ namespace OverLayerCSharp.Structures
         public string color;
         public string fontName;
         public Nullable<int> fontSize;
+        public Nullable<int> fontWeight;
         public string status;
 
         public static TextBoxPreprocess Deserialize(string xmlString)

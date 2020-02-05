@@ -31,6 +31,7 @@ namespace OverLayerCSharp.Structures
         public string color;
         public string fontName;
         public Nullable<int> fontSize;
+        public Nullable<int> fontWeight;
         public string status;
 
         public TextBoxPreprocess()
@@ -84,7 +85,7 @@ namespace OverLayerCSharp.Structures
             
             if(textBox.Color.HasValue)
             {
-                Debug.WriteLine("Color RED {0}, GREEN{1}, BLUE{2}",textBox.Color&0xFF, (textBox.Color>>8) & 0xFF, (textBox.Color>>16) & 0xFF);
+                Debug.WriteLine("Color RED {0}, GREEN {1}, BLUE {2}",textBox.Color&0xFF, (textBox.Color>>8) & 0xFF, (textBox.Color>>16) & 0xFF);
             }
 
             return textBox;
