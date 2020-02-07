@@ -121,7 +121,11 @@ namespace OverLayerCSharp
         public bool CreateWindow()
         {
             Win32Windows.SIZE screenSize = GetScreenSize();
+
+if(DebugState.DebugHandler.IsDebugging)
             wndHwnd = Win32Windows.CreateWindowEx(0, win32ClassName, wndTitle, (UInt32)Win32WindowStyles.WS_POPUP, 0, 0, (int)screenSize.cx, (int)screenSize.cy, IntPtr.Zero, IntPtr.Zero, hInstance, IntPtr.Zero);
+else
+            wndHwnd = Win32Windows.CreateWindowEx(Win32ExtendedStyles.WS_EX_TOPMOST | Win32ExtendedStyles.WS_EX_TOOLWINDOW, win32ClassName, wndTitle, (UInt32)Win32WindowStyles.WS_POPUP, 0, 0, (int)screenSize.cx, (int)screenSize.cy, IntPtr.Zero, IntPtr.Zero, hInstance, IntPtr.Zero);
 
             if (wndHwnd == ((IntPtr)0))
             {
@@ -337,8 +341,11 @@ namespace OverLayerCSharp
                     {
                         IntPtr curExStyle;
                         curExStyle = Win32Windows.GetWindowLongPtr(hWnd, Win32Windows.GWL_EXSTYLE);
-                        Win32Windows.SetWindowLongPtr(hWnd, Win32Windows.GWL_EXSTYLE, (IntPtr)(((int)curExStyle) | Win32ExtendedStyles.WS_EX_LAYERED));
-                        //Win32Messages.SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+                        if (DebugState.DebugHandler.EnableTransparency)
+                        {
+                            Win32Windows.SetWindowLongPtr(hWnd, Win32Windows.GWL_EXSTYLE, (IntPtr)(((int)curExStyle) | Win32ExtendedStyles.WS_EX_LAYERED));
+                        }
+                        //Win32Messages.SetWindowLongPtr(hWnd, GWL_EXSTYLE, GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
                         // Make red pixels transparent:
                         Win32Windows.SetLayeredWindowAttributes(hWnd, Win32Windows.GetSysColor(Win32Windows.COLOR_WINDOW), 0, Win32Windows.LWA_COLORKEY);
                     }
