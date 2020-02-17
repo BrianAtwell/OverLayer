@@ -59,6 +59,7 @@
     <Compile Include="OverLayWindow.cs" />
     <Compile Include="Processing\MathNamedVariable.cs" />
     <Compile Include="Processing\MathParser.cs" />
+    <Compile Include="Processing\ObjectStringSearch.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Structures\TextBoxData.cs" />
