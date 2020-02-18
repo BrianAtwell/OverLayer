@@ -32,12 +32,12 @@ namespace OverLayerCSharp.Processing
 
             FieldInfo fieldInfo = myType.GetField(_fieldName);
 
-            if(fieldInfo.GetType() != typeof(String))
+            if(fieldInfo.FieldType is string)
             {
                 throw new ArgumentException("The fieldName needs to be a field ");
             }
 
-            return (string) fieldInfo.GetValue(_arrayObject);
+            return (string) fieldInfo.GetValue(_arrayObject[curPos]);
         }
 
         public void Reset()
@@ -62,13 +62,24 @@ namespace OverLayerCSharp.Processing
 
                 if (isStartPos)
                 {
-                    if (_stringPosition < curString.Length && curString[_stringPosition] == curChar)
+                    if (_stringPosition < curString.Length)
                     {
-                        _arrayStartPosition++;
+                        if (curString[_stringPosition] != curChar)
+                        {
+                            Console.WriteLine("Start String {0} char {1} char {2}", curString, curString[_stringPosition], curChar);
+                            _arrayStartPosition++;
+                        }
+                        else
+                        {
+
+                            isStartPos = false;
+                        }
                     }
+                
                 }
                 else
                 {
+                    Console.WriteLine("End String {0} char {1} char {2}", curString, curString[_stringPosition], curChar);
                     if (_stringPosition >= curString.Length || curString[_stringPosition] != curChar)
                     {
                         _arrayEndPosition = i - 1;
@@ -77,12 +88,14 @@ namespace OverLayerCSharp.Processing
                 }
             }
 
+            _stringPosition++;
+
             return _arrayEndPosition - _arrayStartPosition;
         }
 
         public int End()
         {
-            if (_arrayEndPosition== _arrayStartPosition && _arrayEndPosition < _arrayObject.Length)
+            if (_arrayEndPosition == _arrayStartPosition && _arrayEndPosition < _arrayObject.Length)
             {
                 string curString = GetObjectString(_arrayEndPosition);
                 if(_stringPosition == curString.Length)

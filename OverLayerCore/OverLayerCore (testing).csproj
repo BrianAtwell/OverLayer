@@ -46,6 +46,9 @@
     <Compile Include="..\OverLayerCSharp\Processing\MathParser.cs">
       <Link>Processing\MathParser.cs</Link>
     </Compile>
+    <Compile Include="..\OverLayerCSharp\Processing\ObjectStringSearch.cs">
+      <Link>Processing\ObjectStringSearch.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
