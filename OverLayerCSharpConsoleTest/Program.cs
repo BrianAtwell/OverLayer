@@ -31,7 +31,7 @@ namespace OverLayerCSharpConsoleTest
 
             mySearch.Reset();
             mySearch.Start();
-            foreach (char c in "ABD")
+            foreach (char c in "AC")
             {
                 mySearch.SearchChar(c);
             }
